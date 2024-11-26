@@ -22,7 +22,6 @@ client.once("ready", () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
   const { commandName, options } = interaction;
 
   if (commandName === 'play') {
