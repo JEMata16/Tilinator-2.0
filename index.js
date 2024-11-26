@@ -22,8 +22,7 @@ client.once("ready", () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isCommand()) return;
-
+  if (!interaction.isChatInputCommand()) return;
   const { commandName, options } = interaction;
 
   if (commandName === 'play') {
@@ -37,6 +36,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
     await interaction.deferReply();
     
+
     await interaction.reply(`🎶 Buscando la música de: ${url}`);
     
     if (!ytdl.validateURL(url)) {
