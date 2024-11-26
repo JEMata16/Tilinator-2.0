@@ -16,7 +16,12 @@ const rest = new REST({ version: "9" }).setToken(token);
 const commands = [
   new SlashCommandBuilder()
     .setName("play")
-    .setDescription("Pon tu chorocotonga música brother"),
+    .setDescription("Pon tu chorocotonga música brother")
+    .addStringOption((option) =>
+        option.setName("url")
+        .setDescription("URL de la musica brother")
+        .setRequired(true)
+    ),
   new SlashCommandBuilder()
     .setName("pause")
     .setDescription("HERMANO DALE PAUSA"),

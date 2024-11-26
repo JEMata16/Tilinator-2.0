@@ -25,12 +25,14 @@ client.on("interactionCreate", async (message) => {
   if (!interaction.isCommand()) return;
   
   if (commandName === 'play') {
-    const args = message.content.split(" ");
-    if (args.length < 2) {
+
+
+    const url = interaction.options.getString("url");
+    if (url.length < 2) {
       return message.reply("Pon tu música conchesumaire");
     }
 
-    const url = args[1];
+   
     if (!ytdl.validateURL(url)) {
       return message.reply("Nononono Url invalid");
     }
