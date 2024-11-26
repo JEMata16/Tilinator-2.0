@@ -35,13 +35,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
         ephemeral: true,
       });
     }
+    await interaction.deferReply();
+    
     await interaction.reply(`🎶 Buscando la música de: ${url}`);
-
+    
     if (!ytdl.validateURL(url)) {
-      return message.reply("Nononono Url invalid");
+      return interaction.reply("Nononono Url invalid");
     }
 
-    await interaction.deferReply();
+    
     const channel = message.member?.voice.channel;
     if (!channel) {
       return interaction.editReply(
@@ -50,7 +52,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
 
     try {
-      const connection = joinVoiceChannel({
+      const connection = await joinVoiceChannel({
         channelId: channel.id,
         guildId: message.guild.id,
         adapterCreator: message.guild.voiceAdapterCreator,
@@ -58,10 +60,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
 
       // Crea un reproductor de audio
-      const player = createAudioPlayer();
+      const player = await createAudioPlayer();
 
       // Crea un recurso de audio desde la transmisión de YouTube
-      const stream = ytdl(url, {
+      const stream = await ytdl(url, {
         filter: 'audioonly',
         quality: 'highestaudio',
         requestOptions: {
@@ -73,7 +75,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       stream.on("info", () => console.log("Stream obtenido con éxito"));
       stream.on("error", (err) => console.error("Error en el stream:", err));
 
-      const resource = createAudioResource(stream);
+      const resource = await createAudioResource(stream);
 
       // Conecta el reproductor al canal de voz
       connection.subscribe(player);
