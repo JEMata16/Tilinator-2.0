@@ -21,24 +21,24 @@ client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-
-  if (message.content.startsWith("!play")) {
+client.on("interactionCreate", async (message) => {
+  if (!interaction.isCommand()) return;
+  
+  if (commandName === 'play') {
     const args = message.content.split(" ");
     if (args.length < 2) {
-      return message.reply("¡Por favor proporciona una URL de YouTube!");
+      return message.reply("Pon tu música conchesumaire");
     }
 
     const url = args[1];
     if (!ytdl.validateURL(url)) {
-      return message.reply("¡URL de YouTube no válida!");
+      return message.reply("Nononono Url invalid");
     }
 
     const channel = message.member?.voice.channel;
     if (!channel) {
       return message.reply(
-        "¡Debes estar en un canal de voz para reproducir música!"
+        "Where is your voice channel? Dude"
       );
     }
 
@@ -75,7 +75,7 @@ client.on("messageCreate", async (message) => {
       player.play(resource);
       player.on('error', (error) => {
         console.error('Error en el AudioPlayer:', error);
-        message.reply('Error linea 79');
+        message.reply('Conchasumaire otra vez error');
       });
       // Maneja eventos del reproductor
       player.on(AudioPlayerStatus.Idle, () => {
@@ -83,7 +83,7 @@ client.on("messageCreate", async (message) => {
         connection.destroy(); // Desconecta del canal al terminar
       });
 
-      message.reply(`🎶 Reproduciendo ahora: ${url}`);
+      message.reply(`🎶 Suena la bomba de: ${url}`);
     } catch (error) {
       console.error("Error al intentar reproducir música:", error);
       message.reply(
@@ -91,6 +91,32 @@ client.on("messageCreate", async (message) => {
       );
     }
   }
+
+  if (commandName === 'pause') {
+    //Stops the music
+    const player = message.guild.voiceConnection?.audioPlayer;
+    if (player) {
+      player.pause();
+    }
+  }
+
+  if (commandName === 'skip') {
+    // Reproduce la siguiente cancion
+    const player = message.guild.voiceConnection?.audioPlayer;
+    if (player) {
+      player.unpause();
+    }
+  }
+
+  if (commandName === 'stop') {
+    //Stops the music
+    const player = message.guild.voiceConnection?.audioPlayer;
+    if (player) {
+      player.stop();
+    }
+  }
+
+
 });
 
 client.login(process.env.DISCORD_TOKEN);
