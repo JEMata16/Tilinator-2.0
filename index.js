@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+
 });
 
 client.once('ready', () => {
@@ -30,11 +31,13 @@ client.on('messageCreate', async (message) => {
     return message.reply('You need to be in a voice channel to play music!');
   }
 
-  const connection = joinVoiceChannel({
-    channelId: channel.id,
-    guildId: message.guild.id,
-    adapterCreator: message.guild.voiceAdapterCreator,
-  });
+const connection = joinVoiceChannel({
+  channelId: channel.id,
+  guildId: message.guild.id,
+  adapterCreator: message.guild.voiceAdapterCreator,
+  selfDeaf: false,
+});
+
 
   const stream = ytdl(url, { filter: 'audioonly' });
   const resource = createAudioResource(stream);
