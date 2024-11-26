@@ -55,8 +55,13 @@ client.on("messageCreate", async (message) => {
 
       // Crea un recurso de audio desde la transmisión de YouTube
       const stream = ytdl(url, {
-        filter: "audioonly",
-        quality: "highestaudio",
+        filter: 'audioonly',
+        quality: 'highestaudio',
+        requestOptions: {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+          },
+        },
       });
       stream.on("info", () => console.log("Stream obtenido con éxito"));
       stream.on("error", (err) => console.error("Error en el stream:", err));
