@@ -1,16 +1,14 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord-api-types/v9");
-const { Client, Intents } = require("discord.js");
+const { Routes } = require("discord-api-types/v10");
 require("dotenv").config();
-// Tu bot Token
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_APPLICATION_ID;
 const guildId = process.env.DISCORD_GUILD_ID;
 
 // Crea el objeto REST
-const rest = new REST({ version: "9" }).setToken(token);
+const rest = new REST({ version: "10" }).setToken(token);
 
 // Define tus comandos
 const commands = [
@@ -18,14 +16,16 @@ const commands = [
     .setName("play")
     .setDescription("Pon tu chorocotonga música brother")
     .addStringOption((option) =>
-        option.setName("url")
+      option.setName("url")
         .setDescription("URL de la musica brother")
         .setRequired(true)
     ),
   new SlashCommandBuilder()
     .setName("pause")
     .setDescription("HERMANO DALE PAUSA"),
-  new SlashCommandBuilder().setName("skip").setDescription("Jump ////"),
+  new SlashCommandBuilder()
+    .setName("skip")
+    .setDescription("Jump ////"),
   new SlashCommandBuilder()
     .setName("stop")
     .setDescription("Stop wait a minute"),
@@ -41,9 +41,7 @@ const commands = [
       { body: commands }
     );
 
-    
-
-    console.log("Comandos registrados correctamente");
+    console.log(`${commands.length} comandos registrados correctamente`);
   } catch (error) {
     console.error("Hubo un error al registrar los comandos:", error);
   }

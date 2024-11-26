@@ -21,7 +21,7 @@ client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
-client.on("interactionCreate", async (interaction) => {
+client.on(Events.InteractionCreate, async (interaction) => {
   if (!interaction.isCommand()) return;
 
   const { commandName, options } = interaction;
