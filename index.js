@@ -29,15 +29,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (commandName === 'play') {
     const url = options.getString('url');
 
-    if (url.length < 2) {
-      return message.reply("Pon tu música conchesumaire");
+    if (!url) {
+      return interaction.reply({
+        content: "Url inválida.",
+        ephemeral: true,
+      });
     }
-
-   
+    await interaction.reply(`🎶 Buscando la música de: ${url}`);
+    
     if (!ytdl.validateURL(url)) {
       return message.reply("Nononono Url invalid");
     }
-
+    
     const channel = message.member?.voice.channel;
     if (!channel) {
       return message.reply(
