@@ -36,14 +36,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
     await interaction.reply(`🎶 Buscando la música de: ${url}`);
-    
+
     if (!ytdl.validateURL(url)) {
       return message.reply("Nononono Url invalid");
     }
-    
+
+    await interaction.deferReply();
     const channel = message.member?.voice.channel;
     if (!channel) {
-      return message.reply(
+      return interaction.editReply(
         "Where is your voice channel? Dude"
       );
     }
@@ -81,7 +82,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       player.play(resource);
       player.on('error', (error) => {
         console.error('Error en el AudioPlayer:', error);
-        message.reply('Conchasumaire otra vez error');
+        interaction.reply('Conchasumaire otra vez error');
       });
       // Maneja eventos del reproductor
       player.on(AudioPlayerStatus.Idle, () => {
@@ -89,10 +90,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
         connection.destroy(); // Desconecta del canal al terminar
       });
 
-      message.reply(`🎶 Suena la bomba de: ${url}`);
+      interaction.reply(`🎶 Suena la bomba de: ${url}`);
     } catch (error) {
       console.error("Error al intentar reproducir música:", error);
-      message.reply(
+      interaction.reply(
         "Mierdon de aplicacion no se puede reproducir musica"
       );
     }
