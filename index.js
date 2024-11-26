@@ -5,7 +5,7 @@ const {
   createAudioResource,
   AudioPlayerStatus,
 } = require("@discordjs/voice");
-const ytdl = require("ytdl-core");
+const ytdl = require("@distube/ytdl-core");
 require("dotenv").config();
 
 const client = new Client({
