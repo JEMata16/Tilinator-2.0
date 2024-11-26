@@ -59,8 +59,7 @@ client.on("messageCreate", async (message) => {
         quality: 'highestaudio',
         requestOptions: {
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'cookie': process.env.COOKIE
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
           },
         },
       });
@@ -74,7 +73,10 @@ client.on("messageCreate", async (message) => {
 
       // Reproduce el recurso
       player.play(resource);
-
+      player.on('error', (error) => {
+        console.error('Error en el AudioPlayer:', error);
+        message.reply('Error linea 79');
+      });
       // Maneja eventos del reproductor
       player.on(AudioPlayerStatus.Idle, () => {
         console.log("Reproducción finalizada.");
