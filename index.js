@@ -21,12 +21,13 @@ client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
-client.on("messageCreate", async (message) => {
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isCommand()) return;
 
+  const { commandName, options } = interaction;
 
-  if (message.content.startsWith('/play')) {
-    const args = message.content.split(' ').slice(1);
-    const url = args.join(' '); 
+  if (commandName === 'play') {
+    const url = options.getString('url');
 
     if (url.length < 2) {
       return message.reply("Pon tu música conchesumaire");
