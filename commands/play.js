@@ -1,59 +1,81 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
-const ytdl = require('@distube/ytdl-core');
+const {
+  joinVoiceChannel,
+  createAudioPlayer,
+  createAudioResource,
+} = require("@discordjs/voice");
+const ytdl = require("ytdl-core");
+
+const queue = new Map();
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName("play")
-		.setDescription("Pon tu chorocotonga música brother")
-		.addStringOption(option => 
-			option.setName("url")
-			.setDescription("URL de la musica brother")
-			.setRequired(true)
-		),
-	async execute(interaction) {
-        interaction.reply("TEST DE CHOROCONTGA MUSICA");
-		// const url = interaction.options.getString("url");
-		// if (!ytdl.validateURL(url)) {
-		// 	return interaction.reply({ content: 'Nononono Url invalid', ephemeral: true });
-		// }
+  name: "play",
+  description: "Reproduce una canción desde YouTube",
+  async execute(message, args) {
+    const url = args[0];
+    if (!ytdl.validateURL(url)) {
+      return message.reply("¡URL de YouTube no válida!");
+    }
 
-		// const channel = interaction.member?.voice.channel;
-		// if (!channel) {
-		// 	return interaction.reply({ content: "Where is your voice channel? Dude", ephemeral: true });
-		// }
+    const voiceChannel = message.member.voice.channel;
+    if (!voiceChannel) {
+      return message.reply(
+        "¡Debes estar en un canal de voz para reproducir música!"
+      );
+    }
 
-		// try {
-		// 	const connection = joinVoiceChannel({
-		// 		channelId: channel.id,
-		// 		guildId: interaction.guild.id,
-		// 		adapterCreator: interaction.guild.voiceAdapterCreator,
-		// 	});
-		// 	const player = createAudioPlayer();
-        //     const stream = await ytdl(url, {
-        //         filter: 'audioonly',
-        //         quality: 'highestaudio',
-        //         requestOptions: {
-        //           headers: {
-        //             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        //           },
-        //         },
-        //       });
+    const serverQueue = queue.get(message.guild.id);
 
-        //     stream.on("info", () => console.log("Stream obtenido con éxito"));
-        //     stream.on("error", (err) => console.error("Error en el stream:", err));
-		// 	const resource = createAudioResource(stream);
-		// 	connection.subscribe(player);
-		// 	player.play(resource);
-        //     player.on(AudioPlayerStatus.Idle, () => {
-        //         console.log("Reproducción finalizada.");
-        //         connection.destroy();
-        //     });
+    if (!serverQueue) {
+      const queueConstructor = {
+        voiceChannel,
+        connection: null,
+        player: createAudioPlayer(),
+        songs: [],
+      };
 
-		// 	await interaction.reply(`Playing: ${url}`);
-		// } catch (error) {
-		// 	console.error(error);
-		// 	await interaction.reply({ content: 'Error playing music!', ephemeral: true });
-		// }
-	},
+      queue.set(message.guild.id, queueConstructor);
+      queueConstructor.songs.push(url);
+
+      try {
+        queueConstructor.connection = joinVoiceChannel({
+          channelId: voiceChannel.id,
+          guildId: message.guild.id,
+          adapterCreator: message.guild.voiceAdapterCreator,
+        });
+
+        this.play(message.guild, queueConstructor.songs[0]);
+      } catch (err) {
+        console.error(err);
+        queue.delete(message.guild.id);
+        return message.reply("Hubo un error al conectar al canal de voz.");
+      }
+    } else {
+      serverQueue.songs.push(url);
+      return message.reply("Canción añadida a la cola.");
+    }
+  },
+
+  play(guild, song) {
+    const serverQueue = queue.get(guild.id);
+    if (!song) {
+      serverQueue.connection.destroy();
+      queue.delete(guild.id);
+      return;
+    }
+
+    const stream = ytdl(song, { filter: "audioonly" });
+    const resource = createAudioResource(stream);
+
+    serverQueue.player.play(resource);
+    serverQueue.connection.subscribe(serverQueue.player);
+
+    serverQueue.player.on("stateChange", (oldState, newState) => {
+      if (newState.status === "idle") {
+        serverQueue.songs.shift();
+        this.play(guild, serverQueue.songs[0]);
+      }
+    });
+
+    serverQueue.player.on("error", (error) => console.error(error));
+  },
 };

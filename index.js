@@ -1,14 +1,7 @@
-const { Client, GatewayIntentBits } = require("discord.js");
-const {
-  joinVoiceChannel,
-  createAudioPlayer,
-  createAudioResource,
-  AudioPlayerStatus,
-} = require("@discordjs/voice");
-const ytdl = require("ytdl-core");
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const fs = require("node:fs");
+const path = require("node:path");
 require("dotenv").config();
-const fs = require('node:fs');
-const path = require('node:path');
 
 const client = new Client({
   intents: [
@@ -20,52 +13,35 @@ const client = new Client({
 });
 
 client.commands = new Collection();
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandsPath = path.join(__dirname, "commands");
+const commandFiles = fs
+  .readdirSync(commandsPath)
+  .filter((file) => file.endsWith(".js"));
 
 for (const file of commandFiles) {
-	const command = require(path.join(commandsPath, file));
-	client.commands.set(command.data.name, command);
+  const command = require(path.join(commandsPath, file));
+  client.commands.set(command.name, command);
 }
-
 
 client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-  // First check if the message starts with the command prefix
-  if (!message.content.startsWith("*")) return;
-  
-  if (message.content.startsWith("*play")) {
-    const args = message.content.split(" ");
-    if (args.length < 2) {
-      return message.reply("¡Por favor proporciona una URL de YouTube!");
-    }
+  if (message.author.bot || !message.content.startsWith("*")) return;
 
-    const url = args[1];
-    if (!ytdl.validateURL(url)) {
-      return message.reply("¡URL de YouTube no válida!");
-    }
+  const args = message.content.slice(1).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
 
-    const channel = message.member?.voice.channel;
-    if (!channel) {
-      return message.reply(
-        "¡Debes estar en un canal de voz para reproducir música!"
-      );
-    }
+  const command = client.commands.get(commandName);
+  if (!command) return;
 
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error executing the command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error executing the command!', ephemeral: true });
-		}
-	}
-}});
+  try {
+    await command.execute(message, args, client);
+  } catch (error) {
+    console.error(error);
+    message.reply("Hubo un error al ejecutar ese comando.");
+  }
+});
 
 client.login(process.env.DISCORD_TOKEN);
