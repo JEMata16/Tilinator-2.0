@@ -1,4 +1,11 @@
-const { Client, GatewayIntentBits, Events, Collection } = require("discord.js");
+const { Client, GatewayIntentBits } = require("discord.js");
+const {
+  joinVoiceChannel,
+  createAudioPlayer,
+  createAudioResource,
+  AudioPlayerStatus,
+} = require("@discordjs/voice");
+const ytdl = require("ytdl-core");
 require("dotenv").config();
 const fs = require('node:fs');
 const path = require('node:path');
