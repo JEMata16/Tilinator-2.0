@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@discordjs/voice": "^0.18.0",
     "@distube/ytdl-core": "^4.15.1",
     "discord-api-types": "^0.37.108",
     "discord.js": "^14.16.3",
