@@ -27,7 +27,7 @@ client.once("ready", () => {
 });
 
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+	if (!interaction.isChatInputCommand()) {console.log('Comando no reconocido'); return; }
   console.log(`Comando: ${interaction.commandName}`);
 	const command = client.commands.get(interaction.commandName);
 	if (!command) {
