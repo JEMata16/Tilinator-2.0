@@ -33,15 +33,26 @@ client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
-client.on(Events.MessageCreate, async interaction => {
-  console.log("Interaction", interaction);
-	if (!interaction.isChatInputCommand()) {console.log('Comando no reconocido'); return; }
-  console.log(`Comando: ${interaction.commandName}`);
-	const command = client.commands.get(interaction.commandName);
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} found.`);
-		return;
-	}
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  if (message.content.startsWith("*play")) {
+    const args = message.content.split(" ");
+    if (args.length < 2) {
+      return message.reply("¡Por favor proporciona una URL de YouTube!");
+    }
+
+    const url = args[1];
+    if (!ytdl.validateURL(url)) {
+      return message.reply("¡URL de YouTube no válida!");
+    }
+
+    const channel = message.member?.voice.channel;
+    if (!channel) {
+      return message.reply(
+        "¡Debes estar en un canal de voz para reproducir música!"
+      );
+    }
 
 	try {
 		await command.execute(interaction);
