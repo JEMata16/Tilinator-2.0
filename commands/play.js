@@ -12,6 +12,7 @@ module.exports = {
   description: "Reproduce una canción desde YouTube",
   async execute(message, args) {
     const url = args[0];
+    const queue = require('./play.js').queue;
     if (!ytdl.validateURL(url)) {
       return message.reply("¡URL de YouTube no válida!");
     }
@@ -22,9 +23,8 @@ module.exports = {
         "¡Debes estar en un canal de voz para reproducir música!"
       );
     }
-    // const serverQueue = queue.push(url);
-    // serverQueue = queue.push(message.guild.id);
-    // serverQueue = queue.get(message.guild.id);
+
+    const serverQueue = queue.get(message.guild.id);
 
     if (!serverQueue) {
       const queueConstructor = {
