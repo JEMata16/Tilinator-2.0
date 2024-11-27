@@ -64,6 +64,6 @@ client.on("messageCreate", async (message) => {
 			await interaction.reply({ content: 'There was an error executing the command!', ephemeral: true });
 		}
 	}
-});
+}});
 
 client.login(process.env.DISCORD_TOKEN);
