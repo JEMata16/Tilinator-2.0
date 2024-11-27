@@ -5,12 +5,13 @@ const {
 } = require("@discordjs/voice");
 const ytdl = require("@distube/ytdl-core");
 
-const queue = new Map();
 
 module.exports = {
   name: "play",
   description: "Reproduce una canción desde YouTube",
   async execute(message, args) {
+	const queue = new Map();
+
     const url = args[0];
     if (!ytdl.validateURL(url)) {
       return message.reply("¡URL de YouTube no válida!");
