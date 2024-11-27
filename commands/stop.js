@@ -1,4 +1,4 @@
-const queue = require("../queue");
+const queue = require("../commands/queue");
 
 module.exports = {
   name: "stop",
