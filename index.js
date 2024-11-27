@@ -26,7 +26,7 @@ client.once("ready", () => {
   console.log(`Bot conectado como ${client.user.tag}`);
 });
 
-client.on(Events.InteractionCreate, async interaction => {
+client.on("Events.InteractionCreate", async interaction => {
   console.log("Interaction", interaction);
 	if (!interaction.isChatInputCommand()) {console.log('Comando no reconocido'); return; }
   console.log(`Comando: ${interaction.commandName}`);
