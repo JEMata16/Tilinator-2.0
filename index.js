@@ -27,6 +27,7 @@ client.once("ready", () => {
 });
 
 client.on(Events.InteractionCreate, async interaction => {
+  console.log("Interaction", interaction);
 	if (!interaction.isChatInputCommand()) {console.log('Comando no reconocido'); return; }
   console.log(`Comando: ${interaction.commandName}`);
 	const command = client.commands.get(interaction.commandName);
@@ -45,32 +46,6 @@ client.on(Events.InteractionCreate, async interaction => {
 			await interaction.reply({ content: 'There was an error executing the command!', ephemeral: true });
 		}
 	}
-
-  // if (commandName === 'pause') {
-  //   //Stops the music
-  //   const player = message.guild.voiceConnection?.audioPlayer;
-  //   if (player) {
-  //     player.pause();
-  //   }
-  // }
-
-  // if (commandName === 'skip') {
-  //   // Reproduce la siguiente cancion
-  //   const player = message.guild.voiceConnection?.audioPlayer;
-  //   if (player) {
-  //     player.unpause();
-  //   }
-  // }
-
-  // if (commandName === 'stop') {
-  //   //Stops the music
-  //   const player = message.guild.voiceConnection?.audioPlayer;
-  //   if (player) {
-  //     player.stop();
-  //   }
-  // }
-
-
 });
 
 client.login(process.env.DISCORD_TOKEN);
