@@ -4,8 +4,7 @@ const {
   createAudioResource,
 } = require("@discordjs/voice");
 const ytdl = require("@distube/ytdl-core");
-
-const queue = new Map();
+const queue = require("../queue");
 
 module.exports = {
   name: "play",
