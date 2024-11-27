@@ -12,7 +12,7 @@ module.exports = {
   description: "Reproduce una canción desde YouTube",
   async execute(message, args) {
     const url = args[0];
-    const queue = require('./play.js').queue;
+
     if (!ytdl.validateURL(url)) {
       return message.reply("¡URL de YouTube no válida!");
     }
