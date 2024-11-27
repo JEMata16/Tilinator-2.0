@@ -22,7 +22,7 @@ client.once("ready", () => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  console.log(interaction.commandName);
+  interaction.reply(interaction.commandName);
   if (!interaction.isChatInputCommand()) return;
   
   const { commandName, options } = interaction;
