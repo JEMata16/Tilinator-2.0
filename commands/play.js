@@ -12,6 +12,7 @@ module.exports = {
 			.setRequired(true)
 		),
 	async execute(interaction) {
+        interaction.deferReply();
 		const url = interaction.options.getString("url");
 		// Command logic here
 		if (!ytdl.validateURL(url)) {
