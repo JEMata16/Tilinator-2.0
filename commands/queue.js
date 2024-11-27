@@ -2,6 +2,7 @@ module.exports = {
   name: "queue",
   description: "Muestra las canciones en la cola",
   execute(message) {
+    const queue = require("../commands/play.js");
     const serverQueue = queue.get(message.guild.id);
     if (!serverQueue || !serverQueue.songs.length) {
       return message.reply("No hay canciones en la cola.");
