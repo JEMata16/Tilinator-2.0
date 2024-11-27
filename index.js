@@ -23,7 +23,9 @@ client.once("ready", () => {
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-
+  // First check if the message starts with the command prefix
+  if (!message.content.startsWith("*")) return;
+  
   if (message.content.startsWith("*play")) {
     const args = message.content.split(" ");
     if (args.length < 2) {
