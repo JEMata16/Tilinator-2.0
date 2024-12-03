@@ -90,10 +90,5 @@ module.exports = {
     });
 
     serverQueue.player.on("error", (error) => console.error(error));
-
-    // Envía un mensaje en el canal de texto indicando qué canción se está reproduciendo
-    guild.channels.cache
-      .find((channel) => channel.type === "GUILD_TEXT")
-      .send(`🎶 Reproduciendo: **${song.title}**`);
   },
 };
